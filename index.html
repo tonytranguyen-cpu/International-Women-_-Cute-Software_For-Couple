@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starlight Love Quest 20/10 🌌🌸</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #0b132b;
+            color: #e0e1dd;
+            overflow-x: hidden;
+        }
+        .font-handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+        .stars-bg {
+            background: radial-gradient(ellipse at bottom, #1c2541 0%, #0b132b 100%);
+        }
+        .star {
+            position: absolute;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 8px #ffd166; }
+        }
+        .glass-card {
+            background: rgba(28, 37, 65, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 209, 102, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glow-btn {
+            background: linear-gradient(135deg, #f72585 0%, #7209b7 100%);
+            box-shadow: 0 0 15px rgba(247, 37, 133, 0.4);
+            transition: all 0.3s ease;
+        }
+        .glow-btn:hover {
+            box-shadow: 0 0 25px rgba(247, 37, 133, 0.8);
+            transform: translateY(-2px);
+        }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 209, 102, 0.15);
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover {
+            background: rgba(255, 209, 102, 0.15);
+            border-color: #ffd166;
+            transform: scale(1.01);
+        }
+        .polaroid-card {
+            background: #ffffff;
+            color: #111;
+            padding: 10px 10px 20px 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        .polaroid-card:hover {
+            transform: scale(1.05) rotate(0deg) !important;
+            z-index: 20;
+            box-shadow: 0 15px 35px rgba(247, 37, 133, 0.4);
+        }
+
+        /* Hiệu ứng Pop-up Tadaa cho ảnh của bạn */
+        @keyframes tadaaPop {
+            0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+            50% { transform: scale(1.15) rotate(5deg); opacity: 1; }
+            70% { transform: scale(0.95) rotate(-3deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .animate-tadaa {
+            animation: tadaaPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* ================= STICKER ĐỘNG HAI BÊN ================= */
+        .side-sticker {
+            position: fixed;
+            width: 85px;
+            height: auto;
+            z-index: 20;
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(255, 209, 102, 0.4));
+        }
+        .left-sticker-1 {
+            top: 12%;
+            left: 2%;
+            animation: floatAndRotate 4s ease-in-out infinite;
+        }
+        .left-sticker-2 {
+            bottom: 12%;
+            left: 2%;
+            animation: bounceAndWiggle 3.5s ease-in-out infinite;
+        }
+        .right-sticker-1 {
+            top: 12%;
+            right: 2%;
+            animation: pulseAndFloat 4.5s ease-in-out infinite;
+        }
+        .right-sticker-2 {
+            bottom: 12%;
+            right: 2%;
+            animation: swingSticker 5s ease-in-out infinite;
+        }
+
+        @keyframes floatAndRotate {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        @keyframes bounceAndWiggle {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-12px) scale(1.08) rotate(3deg); }
+        }
+        @keyframes pulseAndFloat {
+            0%, 100% { transform: translateY(0px) scale(0.95); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+        @keyframes swingSticker {
+            0%, 100% { transform: rotate(0deg) translateY(0); }
+            25% { transform: rotate(8deg) translateY(-8px); }
+            75% { transform: rotate(-8deg) translateY(-8px); }
+        }
+
+        @media (max-width: 768px) {
+            .side-sticker { width: 50px; }
+        }
+    </style>
+</head>
+<body class="stars-bg min-h-screen flex flex-col justify-between relative selection:bg-pink-500 selection:text-white">
+
+    <!-- Bầu trời sao động -->
+    <div id="stars-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- 4 Sticker Động Trang Trí Hai Bên Lề -->
+    <img src="sticker1.png" class="side-sticker left-sticker-1" alt="Sticker 1" onerror="this.style.display='none'">
+    <img src="sticker2.png" class="side-sticker left-sticker-2" alt="Sticker 2" onerror="this.style.display='none'">
+    <img src="sticker3.png" class="side-sticker right-sticker-1" alt="Sticker 3" onerror="this.style.display='none'">
+    <img src="sticker4.png" class="side-sticker right-sticker-2" alt="Sticker 4" onerror="this.style.display='none'">
+
+    <!-- Nút Bật/Tắt Nhạc Nền (Nơi Này Có Anh) -->
+    <button id="music-btn" onclick="toggleMusic()" class="fixed top-4 right-4 z-50 bg-slate-900/80 border border-amber-400/40 text-amber-300 p-3 rounded-full shadow-[0_0_15px_rgba(255,209,102,0.3)] hover:scale-110 transition-all flex items-center justify-center cursor-pointer">
+        <span id="music-icon" class="text-lg">🎵</span>
+    </button>
+
+    <!-- Thẻ Audio Nhạc Nền -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="noi-nay-co-anh.mp3" type="audio/mpeg">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Header -->
+    <header class="relative z-10 w-full max-w-xl mx-auto pt-6 px-4 text-center">
+        <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-pink-400 to-amber-100">
+            🌌 BÍ THUẬT NGOÀI ĐỜI :333 🌸
+        </h1>
+        <p class="text-xs text-slate-400 mt-1">Dành tặng em ghệ xink yêu của Chô Nìiii</p>
+
+        <!-- Rose Counter Bar -->
+        <div class="glass-card mt-4 p-3 rounded-2xl flex items-center justify-between px-5">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl animate-bounce">🌹</span>
+                <span class="font-bold text-amber-300 text-lg" id="rose-count">0 / 10</span>
+            </div>
+            <div class="w-2/3 bg-slate-800 rounded-full h-3 overflow-hidden border border-amber-500/20">
+                <div id="progress-bar" class="bg-gradient-to-r from-pink-500 to-amber-400 h-full w-0 transition-all duration-500 rounded-full"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content Container -->
+    <main class="relative z-10 w-full max-w-xl mx-auto my-auto p-4">
+
+        <!-- SCREEN 1: Game Quests -->
+        <div id="game-screen" class="glass-card rounded-3xl p-6 text-center">
+            <div class="text-xs uppercase tracking-widest text-amber-400 font-semibold mb-2" id="question-number">
+                Câu hỏi 1 / 10
+            </div>
+            <h2 class="text-xl font-bold text-white mb-6 leading-relaxed" id="question-text">
+                Đang tải câu hỏi...
+            </h2>
+
+            <div class="grid grid-cols-1 gap-3 text-left" id="options-container"></div>
+
+            <p id="feedback-text" class="text-xs mt-4 min-h-[20px] text-pink-400 font-semibold italic"></p>
+        </div>
+
+        <!-- SCREEN 2: Rewards Unleashed (WOW Factor) -->
+        <div id="reward-screen" class="hidden glass-card rounded-3xl p-6 text-center space-y-6">
+            <div class="animate-pulse">
+                <span class="text-5xl">✨💖✨</span>
+                <h2 class="text-3xl font-handwriting text-amber-300 font-bold mt-2">Bí Thuật Dành cho Em bé HuaChannnn!</h2>
+                <p class="text-xs text-pink-300">Em bé đã xuất sắc thu thập đủ 10 bông hồng rực rỡ nhất 🌹</p>
+            </div>
+
+            <!-- Dual Clock (Việt Nam - Úc) -->
+            <div class="bg-slate-900/80 border border-amber-400/30 rounded-2xl p-4 grid grid-cols-2 gap-2 text-center">
+                <div class="border-r border-slate-700 pr-2">
+                    <p class="text-xs text-slate-400">🇻🇳 Việt Nam (ICT)</p>
+                    <p class="text-xl font-bold text-pink-400 mt-1" id="time-vn">00:00</p>
+                </div>
+                <div class="pl-2">
+                    <p class="text-xs text-slate-400">🇦🇺 Úc (AEST)</p>
+                    <p class="text-xl font-bold text-amber-300 mt-1" id="time-au">00:00</p>
+                </div>
+                <div class="col-span-2 text-[11px] text-slate-400 italic mt-2 border-t border-slate-800 pt-2">
+                    "Dù cách nhau 4 múi giờ, hai chúng ta vẫn ngắm chung một bầu trời đêm."
+                </div>
+            </div>
+
+            <!-- Interactive Polaroid Gallery -->
+            <div>
+                <h3 class="text-sm font-semibold text-amber-200 mb-3 text-left">📸 Bấm vào từng tấm hình để mở lời nhắn bí mật nò hế hế:</h3>
+                <div class="grid grid-cols-3 gap-2" id="polaroid-gallery"></div>
+            </div>
+
+            <!-- Bức thư tình 20/10 -->
+            <div class="bg-slate-900/90 border border-pink-500/30 p-5 rounded-2xl text-left text-sm leading-relaxed text-slate-200 space-y-3 relative overflow-hidden">
+                <div class="absolute -top-6 -right-6 text-6xl opacity-10">💌</div>
+                <h4 class="font-handwriting text-2xl text-amber-300">Gửi cục dàng của Chô Nìiii,</h4>
+                <div id="love-letter-text" class="space-y-2 text-xs md:text-sm">
+                    <p>Chúc mừng cục dàng ngày 20/10! Dù khoảng cách địa lý khiến anh không thể trực tiếp trao em một li tà tữa hay một cái hun ướt lệ đẫm dãi trong ngày hôm nay...</p>
+                    <p>Nhưng anh hy vọng chiếc quà lấp ánh sao này sẽ mang lại cho em nụ cười rạng rỡ nhất. Cảm ơn Hứa Trang Iu Dấu đã luôn đồng hành, kiên nhẫn và luôn là ngôi sao sáng nhất trong lòng của Chô Lì.</p>
+                </div>
+                <p class="text-right font-handwriting text-xl text-pink-400 pt-2">Yêu em thật nhiều, <br><span class="text-amber-300">Tony Tran ❤️</span></p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- POPUP BẤT NGỜ: ẢNH CỦA BẠN (Tadaa Effect) -->
+    <div id="tadaa-modal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-sm w-full p-6 rounded-3xl text-center space-y-4 animate-tadaa border-2 border-amber-400/50 shadow-[0_0_50px_rgba(255,209,102,0.3)]">
+            <span class="text-4xl animate-bounce inline-block">🎉 Tadaa! 🥳</span>
+            
+            <div class="relative group">
+                <img id="my-photo" src="my-photo.jpg" class="w-full h-64 object-cover rounded-2xl border-2 border-pink-500 shadow-xl" onerror="this.src='https://via.placeholder.com/300x300/1c2541/ffd166?text=Ảnh+Của+Tony'">
+                <div class="absolute bottom-2 right-2 bg-pink-600 text-white text-[10px] px-2 py-1 rounded-full font-bold">Sender 💌</div>
+            </div>
+
+            <h3 class="text-amber-300 font-bold text-lg">"Xuất hiện bất ngờ chưa nè!"</h3>
+            <p class="text-xs text-slate-200 leading-relaxed">
+                Anh gửi thêm ngàn nụ hôn từ Wollongong về tới Việt Nam cho em đây! Bấm bên dưới để nhận món quà đặc biệt nhé 👇
+            </p>
+
+            <button onclick="closeTadaaAndShowRewards()" class="glow-btn w-full py-3 text-sm font-bold text-white rounded-full mt-2 cursor-pointer">
+                Xem Món Quà Tiếp Theo ✨
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Xem Lời Nhắn Ảnh Polaroid -->
+    <div id="photo-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeModal()">
+        <div class="glass-card max-w-sm w-full p-5 rounded-2xl text-center space-y-3" onclick="event.stopPropagation()">
+            <img id="modal-img" src="" class="w-full h-48 object-cover rounded-lg border border-amber-400/20">
+            <h4 id="modal-title" class="text-amber-300 font-bold text-base"></h4>
+            <p id="modal-caption" class="text-xs text-slate-200 leading-relaxed"></p>
+            <button onclick="closeModal()" class="glow-btn px-6 py-2 text-xs font-bold text-white rounded-full cursor-pointer">Đóng lại ✨</button>
+        </div>
+    </div>
+
+    <footer class="relative z-10 text-center py-4 text-xs text-slate-500">
+        Created with ❤️ by Tony Tran for 20/10
+    </footer>
+
+    <script>
+        // Xử lý âm nhạc nền
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-btn');
+        const musicIcon = document.getElementById('music-icon');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicIcon.innerText = '🔇';
+                musicBtn.classList.remove('animate-spin');
+            } else {
+                bgMusic.play().then(() => {
+                    musicIcon.innerText = '🎵';
+                    musicBtn.classList.add('animate-spin');
+                }).catch(err => console.log("Lỗi phát nhạc:", err));
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Tự động bật nhạc khi tương tác lần đầu tiên trên trang
+        document.addEventListener('click', function startMusicOnFirstClick() {
+            if (!isPlaying) {
+                bgMusic.volume = 0.5;
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicIcon.innerText = '🎵';
+                    musicBtn.classList.add('animate-spin');
+                }).catch(() => {});
+            }
+        }, { once: true });
+
+        // Stars background
+        const starsContainer = document.getElementById('stars-container');
+        for (let i = 0; i < 70; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = `${Math.random() * 3 + 1}px`;
+            star.style.height = star.style.width;
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            starsContainer.appendChild(star);
+        }
+
+        const questions = [
+            { question: "Hôm nay là ngày đặc biệt gì thế nhỉ? 🌸", options: ["Ngày Phụ nữ Việt Nam 20/10", "Một ngày chạy đét laiiii", "Ngày Quốc tế Chô Nì", "Ngày Ngủ Lướng"], correct: 0, hint: "Chính xác! Ngày dành riêng cho HuaChannn xinh đẹp nhất hôm nay! 🌹" },
+            { question: "Khoảng cách từ Wollongong (Úc) về Việt Nam khoảng bao nhiêu km?", options: ["Gần 500 km", "Khoảng 7,000 km", "Chắc cỡ 100 km", "Ngay bên cạnh thôi"], correct: 1, hint: "Dù cách xa khoảng 7,000 km nhưng tim Chô Nì lúc nào cũng ở cạnh HuaChannn!" },
+            { question: "Khoảng cách thời gian lệch múi giờ giữa Úc (AEST) và Việt Nam là bao nhiêu?", options: ["1 tiếng", "2 tiếng", "4 tiếng", "Không lệch tiếng nào"], correct: 2, hint: "Lệch 4 tiếng nè, nên anh luôn được ngắm ngày mới sớm hơn em một xíu!" },
+            { question: "Khi HuaChannn dỗi hoặc buồn, điều gì làm HuaChannn nhanh vui nhất?", options: ["Mua đồ ăn ngon", "Nghe Chô Lì xin lỗi và nịnh ngọt ngào", "Cho không gian riêng", "Tất cả các đáp án trên!"], correct: 3, hint: "Tất nhiên là luôn cần Chô Lì ngọt ngào chiều chuộng rồi!" },
+            { question: "Nếu được ước một điều ngay bây giờ, Chô Lì sẽ ước gì?", options: ["Có dĩa cơm sườn", "Trúng số độc đắc", "Được bay ngay về bên em", "Đi ẻ:33"], correct: 2, hint: "Được gặp cục dàng là điều tuyệt vời nhất luôn!" },
+            { question: "Loại đồ uống nào là 'chân chân lý' mỗi khi đi cafe?", options: ["Trà sữa nhiều topping", "Cà phê sữa đá", "Nước ép trái cây tươi", "Trà trái cây nhiệt đới"], correct: 0, hint: "Chuẩn luôn, ngọt ngào hệt như em vậy! 🥤" },
+            { question: "Điều gì ở HuaChann khiến Chô Lì cảm thấy mê đắm nhất?", options: ["Nụ cười tỏa nắng", "Sự thông minh & cá tính", "Thiết kế siu đẹppp", "Tất cả mọi thứ thuộc về em"], correct: 3, hint: "Tất cả mọi thứ của em bé đều là nhất trong mắt Chô Lì!" },
+            { question: "Hình thức hẹn hò phổ biến nhất của Chô Lì Zà HuaChann khi yêu xa là gì?", options: ["Gọi video call trò chuyện", "Xem phim chung qua mạng", "Cùng ăn qua màn hình", "Cả 3 điều trên"], correct: 3, hint: "Màn hình điện thoại là cầu nối tình yêu đấy hẹ hẹ!" },
+            { question: "Người xinh đẹp nhất trên đời này trong mắt anh Tony Đẹp Zai là ai?", options: ["Trường Giang", "Chính là cô gái đang bấm game này!", "Cô gái Bá Khí", "Người lạ ơi là lạ"], correct: 1, hint: "Chính là em chứ còn ai vào đâu nữa! ❤️" },
+            { question: "HuaChannn có hứa sẽ luôn luôn mỉm cười và hạnh phúc mỗi ngày không?", options: ["Đéo luônnnnnn! 💖", "Nhiều lần hứa luôn!", "Chắc chắn rồi!", "Just love you!"], correct: 0, hint: " Đúng zồi :3333 Sẵn sàng nhận món quà lấp lánh cuối cùng của Chô Lì chưa nào!" }
+        ];
+
+        const polaroids = [
+            { img: "photo1.jpg", rot: "-4deg", title: "Điện Thoại của Ai Zạ:3333 ☀️", caption: "Mỗi lần nhìn tấm ảnh này, bao nhiêu mệt mỏi trong ngày của anh đều tan biến hết hì hì!" },
+            { img: "photo2.jpg", rot: "3deg", title: "Chài ai cái mỏ ghét chưa kìa 🌸", caption: "Nhớ những lúc hai đứa mình bên nhau, hẹn một ngày gần nhất anh sẽ về dắt em đi chơi tiếp nhóa!" },
+            { img: "photo3.jpg", rot: "-2deg", title: "Gương Mặt Thân Quen :3333 💕", caption: "Chúc công chúa của anh luôn rực rỡ, xinh đẹp và luôn cảm nhận được tình yêu của anh dù ở xa nhóa" }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('question-number').innerText = `Câu hỏi ${currentQ + 1} / ${questions.length}`;
+            document.getElementById('question-text').innerText = q.question;
+            document.getElementById('feedback-text').innerText = '';
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full p-3.5 rounded-xl text-xs md:text-sm text-slate-200 font-semibold flex items-center space-x-3 cursor-pointer';
+                btn.innerHTML = `<span class="w-6 h-6 rounded-full bg-slate-800 border border-amber-400/30 flex items-center justify-center text-[11px] text-amber-300 font-bold">${String.fromCharCode(65 + idx)}</span> <span>${opt}</span>`;
+                btn.onclick = () => selectOption(idx);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(idx) {
+            const q = questions[currentQ];
+            const feedback = document.getElementById('feedback-text');
+
+            if (idx === q.correct) { 
+                score++;
+                updateProgress();
+                feedback.className = 'text-xs mt-4 min-h-[20px] text-amber-300 font-semibold italic';
+                feedback.innerText = q.hint;
+
+                confetti({ particleCount: 25, spread: 50, origin: { y: 0.7 } });
+
+                setTimeout(() => {
+                    currentQ++;
+                    if (currentQ < questions.length) {
+                        loadQuestion();
+                    } else {
+                        triggerTadaaPopup();
+                    }
+                }, 1200);
+            } else {
+                feedback.className = 'text-xs mt-4 min-h-[20px] text-pink-400 font-semibold italic';
+                feedback.innerText = 'Chưa đúng rầu cục dàng, thử chọn lại câu khác xem sao ikkkk! 😉';
+            }
+        }
+
+        function updateProgress() {
+            document.getElementById('rose-count').innerText = `${score} / 10`;
+            const pct = (score / 10) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+        }
+
+        function triggerTadaaPopup() {
+            document.getElementById('tadaa-modal').classList.remove('hidden');
+            confetti({ particleCount: 100, spread: 100, origin: { y: 0.5 } });
+        }
+
+        function closeTadaaAndShowRewards() {
+            document.getElementById('tadaa-modal').classList.add('hidden');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('reward-screen').classList.remove('hidden');
+
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffd166', '#f72585', '#4cc9f0'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ffd166', '#f72585', '#4cc9f0'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+
+            const gal = document.getElementById('polaroid-gallery');
+            gal.innerHTML = '';
+            polaroids.forEach((p) => {
+                const card = document.createElement('div');
+                card.className = 'polaroid-card rounded-lg cursor-pointer transform';
+                card.style.transform = `rotate(${p.rot})`;
+                card.innerHTML = `
+                    <img src="${p.img}" class="w-full h-24 object-cover rounded" onerror="this.src='https://via.placeholder.com/150/1c2541/ffd166?text=Ảnh+Kỷ+Niệm'">
+                    <p class="text-[10px] font-bold text-slate-800 mt-2 truncate">${p.title}</p>
+                `;
+                card.onclick = () => openModal(p);
+                gal.appendChild(card);
+            });
+        }
+
+        function updateClocks() {
+            const now = new Date();
+            const vn = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Ho_Chi_Minh"}));
+            const au = new Date(now.toLocaleString("en-US", {timeZone: "Australia/Sydney"}));
+            document.getElementById('time-vn').innerText = vn.toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('time-au').innerText = au.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'});
+        }
+        setInterval(updateClocks, 1000);
+        updateClocks();
+
+        function openModal(p) {
+            document.getElementById('modal-img').src = p.img;
+            document.getElementById('modal-title').innerText = p.title;
+            document.getElementById('modal-caption').innerText = p.caption;
+            document.getElementById('photo-modal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('photo-modal').classList.add('hidden');
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
